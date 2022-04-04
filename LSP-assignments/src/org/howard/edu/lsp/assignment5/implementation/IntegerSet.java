@@ -155,44 +155,62 @@ public class IntegerSet {
 	 * the "set" variable is set equal to the value of the union 
 	 * @param IntSetb
 	 */
-	public void union(IntegerSet IntSetb) {
-		for (int i = 0; i < IntSetb.length(); i++) {
-			if (set.contains(IntSetb.set.get(i))) {
-				continue;
-			}
-			else {
-				set.add(IntSetb.set.get(i));
-			}
-		} 
+	public void union(IntegerSet IntSetb) throws IntegerSetException{
+		if (set.isEmpty()) {
+			throw new IntegerSetException("set contains no elements");
+		}
+		else {
+			for (int i = 0; i < IntSetb.length(); i++) {
+				if (set.contains(IntSetb.set.get(i))) {
+					continue;
+				}
+				else {
+					set.add(IntSetb.set.get(i));
+				}
+			} 
+		}
 	};
 	
 	/** this method finds the intersection between two IntegerSets
 	 * the "set" variable is set equal to the value of the intersection
 	 * @param IntSetb
 	 */
-	public void intersect(IntegerSet IntSetb) {
-		for (int i = 0; i < set.size(); i++) {
-			if (IntSetb.contains(set.get(i))) {
-				continue;
-			}
-			else {
-				set.remove(set.get(i));
-			}
-		} 
+	public void intersect(IntegerSet IntSetb) throws IntegerSetException{
+		if (set.isEmpty()) {
+			throw new IntegerSetException("set contains no elements");
+		}
+		else {
+			for (int i = 0; i < set.size(); i++) {
+				if (IntSetb.contains(set.get(i))) {
+					continue;
+				}
+				else {
+					set.remove(set.get(i));
+				}
+			} 
+		}
 	};
 	
-	public void diff(IntegerSet IntSetb) {
-		this.union(IntSetb);
-		ArrayList<Integer> union = new ArrayList<Integer>(this.set);
-		this.intersect(IntSetb);
-		ArrayList<Integer> intersection = new ArrayList<Integer>(this.set);
-		for (int i = 0; i < union.size(); i++) {
-			if (intersection.contains(union.get(i))) {
-				union.remove(i);
+	public void diff(IntegerSet IntSetb) throws IntegerSetException{
+		if (set.isEmpty()) {
+			throw new IntegerSetException("set contains no elements");
+		}
+		else {
+			IntegerSet seta = new IntegerSet();
+			IntegerSet setb = new IntegerSet();
+			for (int i = 0; i < this.length(); i++) {
+				seta.add(this.set.get(i));
 			}
-		this.set = union;
-		
-	}};
+			for (int i = 0; i < IntSetb.length(); i++) {
+				setb.add(IntSetb.set.get(i));
+			}
+			this.union(IntSetb);
+			seta.intersect(setb);
+			for (int i = 0; i < seta.length(); i++) {
+				this.set.remove(seta.set.get(i));	
+			}
+		}
+	};
 	
 	/** 
 	 * this method determines whether or not the IntegerSet is empty. 
