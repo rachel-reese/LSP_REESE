@@ -29,7 +29,8 @@ public class IntegerSetTest {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
 		assertEquals(5, set1.length());
-		assertNotEquals(4, set1.length());
+		set1.remove(5);
+		assertNotEquals(5, set1.length());
 	}
 	
 	@Test
@@ -38,13 +39,9 @@ public class IntegerSetTest {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
 		IntegerSet set2 = new IntegerSet(list);
-		if ((set1.toString() == set2.toString())) {
-			assertTrue(set1.equals(set2));
-		}
+		assertTrue(set1.equals(set2));
 		set2.add(7);
-		if ((set1.toString() == set2.toString())) {
-			assertFalse(set1.equals(set2));
-		}
+		assertFalse(set1.equals(set2));
 	}
 	
 	@Test
@@ -52,17 +49,23 @@ public class IntegerSetTest {
 	public void testContains() {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
-		assertTrue(set1.toString().contains("2"));
-		assertFalse(set1.toString().contains("7"));
+		assertTrue(set1.contains(2));
+		set1.remove(2);
+		assertFalse(set1.contains(2));
+		assertFalse(set1.contains(7));
+		set1.add(7);
+		assertTrue(set1.contains(7));
 	}
 	
 	@Test
 	@DisplayName("IntegerSet.largest test cases")
-	public void testLargest() throws IntegerSetException {
+	public void testLargest() {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
 		assertEquals(5, set1.largest());
-		assertNotEquals(4, set1.largest());
+		set1.remove(5);
+		assertNotEquals(5, set1.largest());
+		assertEquals(4, set1.largest());
 	}
 	
 	@Test
@@ -73,22 +76,22 @@ public class IntegerSetTest {
 			set1.largest();
 		});
 		
-		String expectedMessage = "Set contains no elements";
+		String expectedMessage = "set contains no elements";
 		String actualMessage = exception.getMessage();
 		
-		if (actualMessage.contains(expectedMessage)) {
-			boolean bool = true;
-			assertTrue(bool);
-		}
+		assertTrue(actualMessage.contains(expectedMessage));
+		
 	}
 	
 	@Test
 	@DisplayName("IntegerSet.smallest test cases")
-	public void testSmallest() throws IntegerSetException {
+	public void testSmallest() {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
 		assertEquals(1, set1.smallest());
-		assertNotEquals(2, set1.smallest());
+		set1.remove(1);
+		assertNotEquals(1, set1.smallest());
+		assertEquals(2, set1.smallest());
 	}
 	
 	@Test
@@ -99,12 +102,10 @@ public class IntegerSetTest {
 			set1.smallest();
 		});
 		
-		String expectedMessage = "Set contains no elements";
+		String expectedMessage = "set contains no elements";
 		String actualMessage = exception.getMessage();
-		if (actualMessage.contains(expectedMessage)) {
-			boolean bool = true;
-			assertTrue(bool);
-		}
+		
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 	
 	@Test
@@ -115,6 +116,9 @@ public class IntegerSetTest {
 		set1.add(7);
 		assertEquals("1, 2, 3, 4, 5, 7", set1.toString());
 		assertNotEquals("1, 2, 3, 4, 5", set1.toString());
+		set1.add(5);
+		assertEquals("1, 2, 3, 4, 5, 7", set1.toString());
+		assertNotEquals("1, 2, 3, 4, 5, 7, 5", set1.toString());
 	}
 	
 	@Test
@@ -128,15 +132,29 @@ public class IntegerSetTest {
 	}
 	
 	@Test
+	@DisplayName("IntegerSet.remove exception test cases")
+	public void testRemove_THROWS_EXCEPTION() {
+		IntegerSet set1 = new IntegerSet();
+		Exception exception = assertThrows(IntegerSetException.class, () -> {
+			set1.remove(7);
+		});
+		
+		String expectedMessage = "set contains no elements";
+		String actualMessage = exception.getMessage();
+		
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	@Test
 	@DisplayName("IntegerSet.union test cases")
-	public void testUnion() throws IntegerSetException {
+	public void testUnion() {
 		Integer[] list = {10, 15, 20, 25, 30, 35, 40};
 		IntegerSet setA = new IntegerSet(list);
 		Integer[] list4 = {11, 15, 21, 25, 31, 35, 41};
 		IntegerSet setD = new IntegerSet(list4);
 		setD.union(setA);
 		assertEquals("11, 15, 21, 25, 31, 35, 41, 10, 20, 30, 40", setD.toString());
-		assertNotEquals("11, 15, 21, 25, 31, 35, 41", setD.toString());
+		assertNotEquals("11, 15, 15, 21, 25, 25, 31, 35, 35, 41, 10, 20, 30, 40", setD.toString());
 	}
 	
 	@Test
@@ -148,17 +166,15 @@ public class IntegerSetTest {
 		Exception exception = assertThrows(IntegerSetException.class, () -> {
 			setD.union(setA);
 		});
-		String expectedMessage = "Set contains no elements";
+		String expectedMessage = "set contains no elements";
 		String actualMessage = exception.getMessage();
-		if (actualMessage.contains(expectedMessage)) {
-			boolean bool = true;
-			assertTrue(bool);
-		}
+		
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 	
 	@Test
 	@DisplayName("IntegerSet.intersect test cases")
-	public void testIntersect() throws IntegerSetException {
+	public void testIntersect() {
 		Integer[] list = {10, 15, 20, 25, 30, 35, 40};
 		IntegerSet setA = new IntegerSet(list);
 		Integer[] list4 = {11, 15, 21, 25, 31, 35, 41};
@@ -178,24 +194,22 @@ public class IntegerSetTest {
 		Exception exception = assertThrows(IntegerSetException.class, () -> {
 			setD.intersect(setA);
 		});
-		String expectedMessage = "Set contains no elements";
+		String expectedMessage = "set contains no elements";
 		String actualMessage = exception.getMessage();
-		if (actualMessage.contains(expectedMessage)) {
-			boolean bool = true;
-			assertTrue(bool);
-		}
+		
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 	
 	@Test
 	@DisplayName("IntegerSet.difference test cases")
-	public void testDifference() throws IntegerSetException {
+	public void testDifference() {
 		Integer[] list = {10, 15, 20, 25, 30, 35, 40};
 		IntegerSet setA = new IntegerSet(list);
 		Integer[] list4 = {11, 15, 21, 25, 31, 35, 41};
 		IntegerSet setD = new IntegerSet(list4);
 		setD.diff(setA);
 		assertEquals("11, 21, 31, 41, 10, 20, 30, 40", setD.toString());
-		assertNotEquals("11, 15, 21, 25, 31, 35, 41", setD.toString());
+		assertNotEquals("11, 21, 31, 41, 30, 40", setD.toString());
 		
 	}
 	
@@ -208,12 +222,10 @@ public class IntegerSetTest {
 		Exception exception = assertThrows(IntegerSetException.class, () -> {
 			setD.diff(setA);
 		});
-		String expectedMessage = "Set contains no elements";
+		String expectedMessage = "set contains no elements";
 		String actualMessage = exception.getMessage();
-		if (actualMessage.contains(expectedMessage)) {
-			boolean bool = true;
-			assertTrue(bool);
-		}
+		
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 	
 	@Test
@@ -231,6 +243,22 @@ public class IntegerSetTest {
 		Integer[] list = {1, 2, 3, 4, 5};
 		IntegerSet set1 = new IntegerSet(list);
 		assertEquals("1, 2, 3, 4, 5", set1.toString());
-		assertNotEquals("1, 2, 3, 4", set1.toString());
+		set1.remove(3);
+		assertNotEquals("1, 2, 3, 4, 5", set1.toString());
+		assertEquals("1, 2, 4, 5", set1.toString());
+	}
+	
+	@Test
+	@DisplayName("IntegerSet.toString exception test cases")
+	public void testToString_THROWS_EXCEPTION() {
+		IntegerSet set1 = new IntegerSet();
+		Exception exception = assertThrows(IntegerSetException.class, () -> {
+			set1.toString();
+		});
+		String expectedMessage = "set contains no elements";
+		String actualMessage = exception.getMessage();
+		
+		assertTrue(actualMessage.contains(expectedMessage));
+		
 	}
 }

@@ -34,7 +34,7 @@ public class IntegerSet {
 	 * this method clears all of the items out of the integer set
 	 */
 	public void clear() {
-		set.clear();
+			set.clear();
 	};
 	
 	/**
@@ -92,7 +92,7 @@ public class IntegerSet {
 	 * @return largestNum
 	 * @throws IntegerSetException
 	 */
-	public int largest() throws IntegerSetException{
+	public int largest() {
 		if (set.isEmpty()) {
 			throw new IntegerSetException("set contains no elements");
 		}
@@ -110,7 +110,7 @@ public class IntegerSet {
 	 * @return smallestNum
 	 * @throws IntegerSetException
 	 */
-	public int smallest() throws IntegerSetException{
+	public int smallest() {
 		if (set.isEmpty()) {
 			throw new IntegerSetException("set contains no elements");
 		}
@@ -141,11 +141,16 @@ public class IntegerSet {
 	 * @param item
 	 */
 	public void remove(int item) {
-		if (set.contains(item)) {
-			set.remove(set.indexOf(item));
+		if (set.isEmpty()) {
+			throw new IntegerSetException("set contains no elements");
 		}
 		else {
-			return;
+			if (set.contains(item)) {
+				set.remove(set.indexOf(item));
+			}
+			else {
+				return;
+			}
 		}
 	};
 	
@@ -154,8 +159,8 @@ public class IntegerSet {
 	 * the "set" variable is set equal to the value of the union 
 	 * @param IntSetb
 	 */
-	public void union(IntegerSet IntSetb) throws IntegerSetException{
-		if (set.isEmpty()) {
+	public void union(IntegerSet IntSetb) {
+		if (set.isEmpty() || IntSetb.isEmpty()) {
 			throw new IntegerSetException("set contains no elements");
 		}
 		else {
@@ -174,8 +179,8 @@ public class IntegerSet {
 	 * the "set" variable is set equal to the value of the intersection
 	 * @param IntSetb
 	 */
-	public void intersect(IntegerSet IntSetb) throws IntegerSetException{
-		if (set.isEmpty()) {
+	public void intersect(IntegerSet IntSetb) {
+		if (set.isEmpty() || IntSetb.isEmpty()) {
 			throw new IntegerSetException("set contains no elements");
 		}
 		else {
@@ -190,15 +195,15 @@ public class IntegerSet {
 		}
 	};
 	
-	public void diff(IntegerSet IntSetb) throws IntegerSetException{
-		if (set.isEmpty()) {
+	public void diff(IntegerSet IntSetb) {
+		if (set.isEmpty() || IntSetb.isEmpty()) {
 			throw new IntegerSetException("set contains no elements");
 		}
 		else {
 			IntegerSet seta = new IntegerSet();
 			IntegerSet setb = new IntegerSet();
 			for (int i = 0; i < this.length(); i++) {
-				seta.add(this.set.get(i));
+				seta.add(set.get(i));
 			}
 			for (int i = 0; i < IntSetb.length(); i++) {
 				setb.add(IntSetb.set.get(i));
@@ -206,7 +211,7 @@ public class IntegerSet {
 			this.union(IntSetb);
 			seta.intersect(setb);
 			for (int i = 0; i < seta.length(); i++) {
-				this.set.remove(seta.set.get(i));	
+				set.remove(seta.set.get(i));	
 			}
 		}
 	};
@@ -228,13 +233,18 @@ public class IntegerSet {
 	 * the method also adds commas and spaces to make the set more legible
 	 */
 	public String toString() {
-		String stringSet = new String();
-		for (Integer i: this.set) {
-			stringSet += i.toString();
-			stringSet += ", ";
+		if (set.isEmpty()) {
+			throw new IntegerSetException("set contains no elements");
 		}
-		stringSet = stringSet.substring(0, stringSet.length() - 2);
-		return stringSet;
+		else {
+			String stringSet = new String();
+			for (Integer i: set) {
+				stringSet += i.toString();
+				stringSet += ", ";
+			}
+			stringSet = stringSet.substring(0, stringSet.length() - 2);
+			return stringSet;
+		}
 	};
 
 }
